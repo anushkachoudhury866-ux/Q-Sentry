@@ -1,18 +1,21 @@
 /* ============================================================
    Q-SENTRY — Security Monitoring Dashboard
-   Frontend-only mock logic. No backend, no real sensors.
+  Simulated sensor controls backed by the Q-Sentry API.
    ============================================================ */
 
 (function () {
   "use strict";
 
   const RISK_WEIGHTS = {
-    door: 20,
-    motion: 20,
-    vibration: 25,
+    door: 25,
+    motion: 15,
+    vibration: 50,
     printer: 10,
     afterHours: 47
   };
+
+  const API_URL = "http://127.0.0.1:8000";
+  const DEVICE_ID = "dashboard-demo-01";
 
   const state = {
     door: true,
@@ -24,12 +27,9 @@
 
   let vibrationTimer = null;
 
-  const eventLogData = [
-    { time: "19:04:25", event: "Vibration detected", risk: "+25", status: "normal" },
-    { time: "19:04:18", event: "Motion detected", risk: "+20", status: "active" },
-    { time: "19:04:12", event: "Door opened", risk: "+20", status: "active" },
-    { time: "18:45:03", event: "System reset", risk: "+0", status: "normal" }
-  ];
+  let eventLogData = [];
+  let serverRiskScore = null;
+  let syncQueue = Promise.resolve();
 
   const el = {
     dotDoor: document.getElementById("dotDoor"),
@@ -52,12 +52,62 @@
 
     eventLog: document.getElementById("eventLog"),
     dateTime: document.getElementById("dateTime"),
+    apiStatusDot: document.getElementById("apiStatusDot"),
+    apiStatusText: document.getElementById("apiStatusText"),
 
     simButtons: document.querySelectorAll(".sim-btn")
   };
 
   const RING_CIRCUMFERENCE = 2 * Math.PI * 78;
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  function setApiStatus(connected) {
+    el.apiStatusText.textContent = connected ? "API CONNECTED" : "API OFFLINE";
+    el.apiStatusDot.classList.toggle("dot-green", connected);
+    el.apiStatusDot.classList.toggle("dot-red", !connected);
+    el.apiStatusDot.classList.remove("dot-yellow");
+  }
+
+  function loadEvents() {
+    return fetch(`${API_URL}/events?limit=8`).then(response => {
+      if (!response.ok) throw new Error(`Event request failed: ${response.status}`);
+      return response.json();
+    }).then(events => {
+      eventLogData = events;
+      renderLog();
+    });
+  }
+
+  function syncState() {
+    const reading = {
+      device_id: DEVICE_ID,
+      motion_detected: state.motion,
+      door_open: state.door,
+      tamper_detected: state.vibration,
+      printer_connected: true,
+      printer_active: state.printer,
+      after_hours_detected: state.afterHours
+    };
+
+    syncQueue = syncQueue.then(() => fetch(`${API_URL}/sensor-data`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(reading)
+    })).then(response => {
+      if (!response.ok) throw new Error(`Sensor request failed: ${response.status}`);
+      return response.json();
+    }).then(event => {
+      serverRiskScore = event.risk_score;
+      setApiStatus(true);
+      renderRisk();
+      return loadEvents();
+    }).catch(error => {
+      serverRiskScore = null;
+      setApiStatus(false);
+      renderRisk();
+      console.error("Could not sync dashboard with Q-Sentry API:", error);
+    });
+  }
 
   function pad(n) { return n.toString().padStart(2, "0"); }
 
@@ -92,12 +142,6 @@
   const LEVEL_COLOR = { low: "var(--green)", medium: "var(--yellow)", high: "var(--orange)", critical: "var(--red)" };
   const LEVEL_DOT = { low: "dot-green", medium: "dot-yellow", high: "dot-orange", critical: "dot-red" };
 
-  function addLogEntry(event, riskDelta, status) {
-    eventLogData.unshift({ time: nowTimeString(), event, risk: riskDelta, status });
-    if (eventLogData.length > 8) eventLogData.pop();
-    renderLog();
-  }
-
   function renderSensors() {
     setSensor(el.dotDoor, el.valDoor, state.door, "OPEN", "CLOSED", true);
     setSensor(el.dotMotion, el.valMotion, state.motion, "DETECTED", "CLEAR", true);
@@ -120,7 +164,7 @@
   }
 
   function renderRisk() {
-    const score = computeRisk();
+    const score = serverRiskScore ?? computeRisk();
     const level = threatLevelFor(score);
 
     el.riskScoreNum.textContent = score;
@@ -163,17 +207,32 @@
   }
 
   function renderLog() {
+    if (!eventLogData.length) {
+      el.eventLog.innerHTML = '<tr><td colspan="4">No backend events yet</td></tr>';
+      return;
+    }
+
     el.eventLog.innerHTML = eventLogData.map(row => `
       <tr>
-        <td class="time">${row.time}</td>
-        <td>${row.event}</td>
-        <td class="risk-pos">${row.risk}</td>
-        <td><span class="status-chip ${row.status === "active" ? "active" : "normal"}">
-          <span class="status-dot ${row.status === "active" ? "dot-red" : "dot-green"}"></span>
-          ${row.status === "active" ? "ACTIVE" : "NORMAL"}
+        <td class="time">${new Date(row.timestamp).toLocaleTimeString()}</td>
+        <td>${describeEvent(row)}</td>
+        <td class="risk-pos">${row.risk_score}</td>
+        <td><span class="status-chip ${row.risk_level === "low" ? "normal" : "active"}">
+          <span class="status-dot ${row.risk_level === "low" ? "dot-green" : "dot-red"}"></span>
+          ${row.risk_level.toUpperCase()}
         </span></td>
       </tr>
     `).join("");
+  }
+
+  function describeEvent(event) {
+    const signals = [];
+    if (event.door_open) signals.push("Door open");
+    if (event.motion_detected) signals.push("Motion detected");
+    if (event.tamper_detected) signals.push("Tampering detected");
+    if (event.printer_active) signals.push("Printer active");
+    if (event.after_hours_detected) signals.push("Outside allowed time");
+    return signals.length ? signals.join(", ") : "No active signals";
   }
 
   function renderAll() {
@@ -184,39 +243,39 @@
 
   function toggleDoor() {
     state.door = !state.door;
-    addLogEntry(state.door ? "Door opened" : "Door closed", state.door ? `+${RISK_WEIGHTS.door}` : "+0", state.door ? "active" : "normal");
     renderAll();
+    syncState();
   }
 
   function toggleMotion() {
     state.motion = !state.motion;
-    addLogEntry(state.motion ? "Motion detected" : "Motion cleared", state.motion ? `+${RISK_WEIGHTS.motion}` : "+0", state.motion ? "active" : "normal");
     renderAll();
+    syncState();
   }
 
   function triggerVibration() {
     state.vibration = true;
-    addLogEntry("Vibration / tampering detected", `+${RISK_WEIGHTS.vibration}`, "active");
     renderAll();
+    syncState();
 
     clearTimeout(vibrationTimer);
     vibrationTimer = setTimeout(() => {
       state.vibration = false;
-      addLogEntry("Vibration returned to normal", "+0", "normal");
       renderAll();
+      syncState();
     }, 4000);
   }
 
   function togglePrinter() {
     state.printer = !state.printer;
-    addLogEntry(state.printer ? "Printer activated" : "Printer disabled", state.printer ? `+${RISK_WEIGHTS.printer}` : "+0", state.printer ? "active" : "normal");
     renderAll();
+    syncState();
   }
 
   function toggleAfterHours() {
     state.afterHours = !state.afterHours;
-    addLogEntry(state.afterHours ? "Activity outside allowed time" : "Back within allowed hours", state.afterHours ? `+${RISK_WEIGHTS.afterHours}` : "+0", state.afterHours ? "active" : "normal");
     renderAll();
+    syncState();
   }
 
   function resetSystem() {
@@ -226,8 +285,8 @@
     state.vibration = false;
     state.printer = false;
     state.afterHours = false;
-    addLogEntry("System reset", "+0", "normal");
     renderAll();
+    syncState();
   }
 
   const ACTIONS = {
@@ -250,5 +309,6 @@
   updateDateTime();
 
   renderAll();
+  syncState();
 
 })();

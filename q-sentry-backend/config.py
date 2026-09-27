@@ -9,6 +9,8 @@ RISK_WEIGHTS = {
     "tamper_detected": 50,
     "door_open": 25,
     "printer_disconnected": 20,
+    "printer_active": 10,
+    "after_hours_detected": 47,
     "motion_detected": 15,
 }
 

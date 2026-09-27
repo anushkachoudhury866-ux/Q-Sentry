@@ -11,6 +11,8 @@ def calculate_risk(reading: LegacySensorReading) -> tuple[int, str]:
     score += RISK_WEIGHTS["door_open"] if reading.door_open else 0
     score += RISK_WEIGHTS["tamper_detected"] if reading.tamper_detected else 0
     score += RISK_WEIGHTS["printer_disconnected"] if not reading.printer_connected else 0
+    score += RISK_WEIGHTS["printer_active"] if reading.printer_active else 0
+    score += RISK_WEIGHTS["after_hours_detected"] if reading.after_hours_detected else 0
     score = min(score, 100)
 
     for upper_bound, level in RISK_LEVELS:

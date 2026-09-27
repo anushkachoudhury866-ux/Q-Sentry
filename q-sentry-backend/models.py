@@ -127,6 +127,8 @@ class LegacySensorReading(BaseModel):
     door_open: bool = False
     tamper_detected: bool = False
     printer_connected: bool = True
+    printer_active: bool = False
+    after_hours_detected: bool = False
 
 
 class SensorEvent(LegacySensorReading):

@@ -26,7 +26,8 @@
 
       <div class="topbar-right">
         <div class="system-pill">
-          <span class="dot dot-green"></span> SYSTEM ACTIVE
+          <span class="dot dot-yellow" id="apiStatusDot"></span>
+          <span id="apiStatusText">CONNECTING TO API</span>
         </div>
         <span class="topbar-sep"></span>
         <span class="date-time" id="dateTime">-- --- ----&nbsp;&nbsp;--:--:--</span>
@@ -85,10 +86,10 @@
         <div class="card threat-scale-card">
           <div class="section-title">Threat Levels</div>
           <ul class="threat-scale">
-            <li><span class="status-dot dot-green"></span> Low <em>0 – 30</em></li>
-            <li><span class="status-dot dot-yellow"></span> Medium <em>31 – 60</em></li>
-            <li><span class="status-dot dot-orange"></span> High <em>61 – 80</em></li>
-            <li><span class="status-dot dot-red"></span> Critical <em>81 – 100</em></li>
+            <li><span class="status-dot dot-green"></span> Low <em>0 – 24</em></li>
+            <li><span class="status-dot dot-yellow"></span> Medium <em>25 – 49</em></li>
+            <li><span class="status-dot dot-orange"></span> High <em>50 – 74</em></li>
+            <li><span class="status-dot dot-red"></span> Critical <em>75 – 100</em></li>
           </ul>
         </div>
 
@@ -168,7 +169,7 @@
                   <tr>
                     <th>Time</th>
                     <th>Event</th>
-                    <th>Risk Contribution</th>
+                    <th>Risk Score</th>
                     <th>Status</th>
                   </tr>
                 </thead>
@@ -180,7 +181,7 @@
 
       </section>
 
-      <p class="footnote">Q-SENTRY demo dashboard for coursework use only — no real sensors connected.</p>
+      <p class="footnote">Q-SENTRY demo dashboard for coursework use only — sensor values are simulated.</p>
 
     </main>
   </div>
