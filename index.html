@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Q-SENTRY — Security Monitoring Dashboard</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- Header -->
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+            <path d="M12 2.5 4 5.5v6c0 5.2 3.4 8.7 8 10 4.6-1.3 8-4.8 8-10v-6L12 2.5Z"/>
+            <path d="M9.2 12.1 11.2 14.1 15 9.6" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="brand-name">Q<span class="brand-dash">-</span><span class="brand-accent">SENTRY</span></span>
+        <span class="brand-sep"></span>
+        <span class="brand-sub">Security Monitoring Dashboard</span>
+      </div>
+
+      <div class="topbar-right">
+        <div class="system-pill">
+          <span class="dot dot-green"></span> SYSTEM ACTIVE
+        </div>
+        <span class="topbar-sep"></span>
+        <span class="date-time" id="dateTime">-- --- ----&nbsp;&nbsp;--:--:--</span>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Row 1: Sensor cards + Threat levels -->
+      <section class="row-top">
+
+        <div class="card sensor-card" data-sensor="door">
+          <div class="sensor-top">
+            <span class="sensor-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="3" width="12" height="18" rx="1"/><circle cx="13.5" cy="12" r="0.9" fill="currentColor" stroke="none"/></svg>
+            </span>
+            <span class="status-dot dot-red" id="dotDoor"></span>
+          </div>
+          <div class="sensor-label">Door Status</div>
+          <div class="sensor-value danger" id="valDoor">OPEN</div>
+        </div>
+
+        <div class="card sensor-card" data-sensor="motion">
+          <div class="sensor-top">
+            <span class="sensor-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="4.5" r="1.6" fill="currentColor" stroke="none"/><path d="M11 21l1.6-6-2-1.7.6-4.3 3-1 2.4 2.6 3 1M9.6 13.3 6 15l-1 4.5"/></svg>
+            </span>
+            <span class="status-dot dot-red" id="dotMotion"></span>
+          </div>
+          <div class="sensor-label">Motion</div>
+          <div class="sensor-value danger" id="valMotion">DETECTED</div>
+        </div>
+
+        <div class="card sensor-card" data-sensor="vibration">
+          <div class="sensor-top">
+            <span class="sensor-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9v6M7 6v12M11 4v16M15 6v12M19 9v6"/></svg>
+            </span>
+            <span class="status-dot dot-green" id="dotVibration"></span>
+          </div>
+          <div class="sensor-label">Vibration</div>
+          <div class="sensor-value safe" id="valVibration">NORMAL</div>
+        </div>
+
+        <div class="card sensor-card" data-sensor="printer">
+          <div class="sensor-top">
+            <span class="sensor-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M6 8V3h12v5"/><rect x="4" y="8" width="16" height="8" rx="1"/><path d="M6 16h12v5H6z"/></svg>
+            </span>
+            <span class="status-dot dot-green" id="dotPrinter"></span>
+          </div>
+          <div class="sensor-label">Printer</div>
+          <div class="sensor-value safe" id="valPrinter">DISABLED</div>
+        </div>
+
+        <div class="card threat-scale-card">
+          <div class="section-title">Threat Levels</div>
+          <ul class="threat-scale">
+            <li><span class="status-dot dot-green"></span> Low <em>0 – 30</em></li>
+            <li><span class="status-dot dot-yellow"></span> Medium <em>31 – 60</em></li>
+            <li><span class="status-dot dot-orange"></span> High <em>61 – 80</em></li>
+            <li><span class="status-dot dot-red"></span> Critical <em>81 – 100</em></li>
+          </ul>
+        </div>
+
+      </section>
+
+      <!-- Row 2: Risk card / Alert + Log -->
+      <section class="row-mid">
+
+        <div class="col-left">
+          <div class="card risk-card">
+            <div class="risk-ring-wrap">
+              <svg viewBox="0 0 180 180" class="risk-ring">
+                <circle cx="90" cy="90" r="78" class="ring-bg"></circle>
+                <circle cx="90" cy="90" r="78" class="ring-fg" id="ringFg"></circle>
+              </svg>
+              <div class="risk-ring-center">
+                <div class="risk-ring-label">RISK SCORE</div>
+                <div class="risk-ring-value"><span id="riskScoreNum">87</span><span class="risk-ring-max">/100</span></div>
+                <div class="threat-pill" id="threatPill">CRITICAL</div>
+              </div>
+            </div>
+
+            <div class="risk-details">
+              <div class="risk-level-row">
+                <span class="risk-level-label">Risk Level</span>
+                <span class="risk-level-value" id="threatLevelText">
+                  <span class="status-dot dot-red"></span> CRITICAL
+                </span>
+              </div>
+              <div class="divider"></div>
+              <div class="breakdown-label">Risk Breakdown</div>
+              <ul class="breakdown-list" id="breakdownList">
+                <li><span>Door opened</span><b>+20</b></li>
+                <li><span>Motion detected</span><b>+20</b></li>
+                <li><span>Vibration / tampering</span><b>+0</b></li>
+                <li><span>Printer active</span><b>+0</b></li>
+                <li><span>Outside allowed time</span><b>+47</b></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card sim-card">
+            <div class="section-title">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="section-icon"><path d="M9 3h6M10 3v5.2L5.5 16a2 2 0 0 0 1.7 3h9.6a2 2 0 0 0 1.7-3L14 8.2V3"/></svg>
+              Simulate Sensor Events
+            </div>
+            <div class="sim-grid">
+              <button class="sim-btn sim-danger" data-action="door">Open Door</button>
+              <button class="sim-btn sim-danger" data-action="motion">Detect Motion</button>
+              <button class="sim-btn sim-danger" data-action="vibration">Trigger Vibration</button>
+              <button class="sim-btn" data-action="printer">Activate Printer</button>
+              <button class="sim-btn" data-action="afterhours">Outside Allowed Time</button>
+              <button class="sim-btn" data-action="reset">Reset System</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-right">
+          <div class="card alert-card" id="alertCard">
+            <div class="alert-icon">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3 22 20H2L12 3Z"/><path d="M12 10v4M12 17h.01"/></svg>
+            </div>
+            <div>
+              <div class="alert-title">Security Alert</div>
+              <div class="alert-text" id="alertText">Unauthorized activity detected!</div>
+            </div>
+          </div>
+
+          <div class="card log-card">
+            <div class="section-title">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+              Event Log
+            </div>
+            <div class="table-wrap">
+              <table class="event-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Event</th>
+                    <th>Risk Contribution</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="eventLog"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <p class="footnote">Q-SENTRY demo dashboard for coursework use only — no real sensors connected.</p>
+
+    </main>
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>
