@@ -1,20 +1,22 @@
-🔐 Q-SENTRY — Smart Question Paper Security System
-
+# 🔐 Q-SENTRY — Smart Question Paper Security System
+---
 📝 Description
 
 Q-SENTRY is a smart security system designed to protect confidential question papers in examination centres. It uses multiple sensors to detect motion, unauthorized door opening, and physical tampering, while providing automatic alerts and real-time monitoring.
 
-✨ Features
+---
+
+## ✨ Features
 
 🔹 Motion detection using PIR
 
-🔹 Door monitoring using Reed Switch
+🔹 Door monitoring using Slide Switch
 
 🔹 Tamper detection using SW-420
 
 🔹 Automatic Buzzer & LED alerts
 
-🔹 OLED security-status display
+🔹 LCD 16 * 2 security-status display
 
 🔹 Relay-based control
 
@@ -22,34 +24,55 @@ Q-SENTRY is a smart security system designed to protect confidential question pa
 
 🔹 Event logging and monitoring
 
+---
 
-🛠️ Tech Stack
+## 🛠️ Tech Stack
 
-Hardware:
-ESP32 / Arduino UNO • PIR • Reed Switch • SW-420 • OLED • Buzzer • LEDs • Relay
+*Hardware*:
+-ESP32 / Arduino UNO 
+-PIR 
+-Slide Switch 
+-SW-420 
+-LCD 16 * 2 
+-Buzzer 
+-LEDs 
+-Relay
 
-Software:
-Arduino C++ • FastAPI • Python • HTML/CSS/JavaScript • REST API • JSON • Git/GitHub • Tinkercad/Wokwi
+*Software*:
+-Arduino C++ 
+-astAPI 
+-Python 
+-HTML/CSS/JavaScript 
+-REST API 
+-JSON 
+-Git/GitHub 
+-Tinkercad
 
-⚙️ How It Works
+---
+
+## ⚙️ How It Works
 
 Sensors continuously monitor the examination room → ESP32/Arduino processes the inputs → detects security conditions → triggers alerts/automatic response → sends event data to the FastAPI backend → displays status and logs on the dashboard.
 
-🖥️ Dashboard
+---
+
+## 🖥️ Dashboard
 
 Q-SENTRY | Security Monitoring Dashboard provides real-time security status, risk levels, sensor activity, alerts, and event logs for quick monitoring and response.
 
-🔮 Future Scope
+---
 
-Camera-based verification
+## 🔮 Future Scope
 
-SMS/WhatsApp alerts
+-Camera-based verification
 
-RFID/biometric authentication
+-SMS/WhatsApp alerts
 
-Cloud-based monitoring
+-RFID/biometric authentication
 
-AI-based anomaly detection
+-Cloud-based monitoring
+
+-AI-based anomaly detection
 
 
 ⚡ From detection to response — Q-SENTRY keeps exam security one step ahead.
