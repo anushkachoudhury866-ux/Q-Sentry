@@ -4,6 +4,12 @@
 
 Q-SENTRY is a smart, sensor-based security system designed to protect confidential question papers in examination centres. It detects unauthorized motion, door access, and physical tampering, triggers automatic alerts, and displays the security status in real time. The system also provides a web-based dashboard for monitoring events and security logs, enabling faster response and improved accountability.
 
+<p align="center">
+  <a href=https://github.com/anushkachoudhury866-ux/Q-Sentry.git>
+    <img src="./Image/Q-Sentry circuit.png" />
+  </a>
+</p>
+
 ---
 
 ## ✨ Features
@@ -90,6 +96,12 @@ Sensors continuously monitor the examination room → ESP32/Arduino processes th
 ## 🖥️ Dashboard
 
 Q-SENTRY | The Q-SENTRY dashboard provides a real-time overview of examination room security, displaying the current security status, risk level, sensor activity, and detected events. It highlights Normal, Warning, and Critical conditions and provides instant visibility into suspicious activities such as motion, door opening, or tampering. The dashboard also maintains event logs to support monitoring, tracking, and quick response.
+
+<p align="center">
+  <a href=https://github.com/anushkachoudhury866-ux/Q-Sentry.git>
+    <img src="./Image/Q-Sentry Dashboard.jpg.png" />
+  </a>
+</p>
 
 
 ---
