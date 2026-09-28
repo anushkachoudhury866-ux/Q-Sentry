@@ -1,8 +1,8 @@
 # 🔐 Q-SENTRY — Smart Question Paper Security System
 ---
-📝 Description
+## 📝 Description
 
-Q-SENTRY is a smart security system designed to protect confidential question papers in examination centres. It uses multiple sensors to detect motion, unauthorized door opening, and physical tampering, while providing automatic alerts and real-time monitoring.
+Q-SENTRY is a smart, sensor-based security system designed to protect confidential question papers in examination centres. It detects unauthorized motion, door access, and physical tampering, triggers automatic alerts, and displays the security status in real time. The system also provides a web-based dashboard for monitoring events and security logs, enabling faster response and improved accountability.
 
 ---
 
@@ -28,27 +28,58 @@ Q-SENTRY is a smart security system designed to protect confidential question pa
 
 ## 🛠️ Tech Stack
 
-*Hardware*:
--ESP32 / Arduino UNO 
--PIR 
--Slide Switch 
--SW-420 
--LCD 16 * 2 
--Buzzer 
--LEDs 
--Relay
+*Hardware:*
 
-*Software*:
--Arduino C++ 
--astAPI 
--Python 
--HTML/CSS/JavaScript 
--REST API 
--JSON 
--Git/GitHub 
--Tinkercad
+- ESP32 / Arduino UNO 
+- PIR 
+- Slide Switch 
+- SW-420 
+- LCD 16 * 2 
+- Buzzer 
+- LEDs 
+- Relay
+
+*Software:*
+
+- Arduino C++ 
+- astAPI 
+- Python 
+- HTML/CSS/JavaScript 
+- REST API 
+- JSON 
+- Git/GitHub 
+- Tinkercad
 
 ---
+
+## 📊 SWOT Analysis
+
+**💪 Strengths**
+
+- Real-time monitoring using multiple sensors.
+- Automatic alerts for suspicious activity.
+- Low-cost and easy-to-deploy solution.
+- Dashboard provides centralized event monitoring.
+
+**⚠️ Weaknesses**
+
+- Sensor-based detection may cause false alerts.
+- Internet connectivity is required for remote dashboard updates.
+- Prototype depends on continuous power supply.
+
+**🚀 Opportunities**
+
+- Add camera-based verification and AI detection.
+- Integrate SMS/WhatsApp notifications.
+- Add RFID or biometric authentication.
+- Scale for multiple examination centres.
+
+**🔮 Threats**
+
+- Sensor failure or physical damage.
+- Power or network failure.
+- Environmental factors may affect sensor readings.
+- Unauthorized attempts to bypass or tamper with the system.
 
 ## ⚙️ How It Works
 
@@ -58,21 +89,18 @@ Sensors continuously monitor the examination room → ESP32/Arduino processes th
 
 ## 🖥️ Dashboard
 
-Q-SENTRY | Security Monitoring Dashboard provides real-time security status, risk levels, sensor activity, alerts, and event logs for quick monitoring and response.
+Q-SENTRY | The Q-SENTRY dashboard provides a real-time overview of examination room security, displaying the current security status, risk level, sensor activity, and detected events. It highlights Normal, Warning, and Critical conditions and provides instant visibility into suspicious activities such as motion, door opening, or tampering. The dashboard also maintains event logs to support monitoring, tracking, and quick response.
+
 
 ---
 
 ## 🔮 Future Scope
 
--Camera-based verification
-
--SMS/WhatsApp alerts
-
--RFID/biometric authentication
-
--Cloud-based monitoring
-
--AI-based anomaly detection
+- Camera-based verification
+- SMS/WhatsApp alerts
+- RFID/biometric authentication
+- Cloud-based monitoring
+- AI-based anomaly detection
 
 
 ⚡ From detection to response — Q-SENTRY keeps exam security one step ahead.
